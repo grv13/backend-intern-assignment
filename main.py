@@ -4,8 +4,8 @@ from flask import request
 app = Flask(__name__)
 
 tasks = [
-    {"id": 1, "title": "Task 1", "description": "Description for Task 1"},
-    {"id": 2, "title": "Task 2", "description": "Description for Task 2"},
+    {"id": 1, "title": "Task 1", "description": "Description for Task 1", "due_date": "12-01-2025", "status": "Complete"},
+    {"id": 2, "title": "Task 2", "description": "Description for Task 2","due_date": "13-05-2025", "status": "Incomplete"},
 ]
 
 @app.route('/details', methods=['GET'])
@@ -19,6 +19,8 @@ def task():
 
     title = request.json.get('title')
     description = request.json.get('description')
+    due_date = request.json.get("due_date")
+    status = request.json.get("status")
 
     if not title or not description:
         return jsonify({'message': 'Invalid request. Missing title or description.'}), 400
@@ -26,7 +28,9 @@ def task():
     new_task = {
         'id': len(tasks) + 1,
         'title': title,
-        'description': description
+        'description': description,
+        'due_date': due_date,
+        'status': status,
     }
     tasks.append(new_task)
     return jsonify(new_task), 201
@@ -37,6 +41,8 @@ def update_task(task_id):
     if task:
         task['title'] = request.json['title']
         task['description'] = request.json['description']
+        task['due_date'] = request.json['due_date']
+        task['status'] = request.json['status']
         return jsonify(task)
     else:
         return jsonify({'message': 'Task not found.'}), 404
